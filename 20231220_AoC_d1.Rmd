@@ -1,0 +1,14 @@
+---
+title: "AoC d1 exercise"
+output: html_document
+date: "2023-12-20"
+---
+```{r}
+d1_text <- read_tsv("C:/Documents and Settings/kturn/Documents/AdventOfCode2023/d1_text.txt",col_names = "puz_input")
+d1_text$first_num <- str_extract(d1_text$puz_input,"\\d")
+d1_text$last_num <- str_extract(d1_text$puz_input,"(\\d)(?!.*\\d)")
+d1_text$first_last <- as.integer(paste(d1_text$first_num,d1_text$last_num,sep = ""))
+sum(d1_text$first_last)
+glimpse(d1_text)
+```
+
