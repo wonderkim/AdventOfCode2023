@@ -1,14 +1,42 @@
 ---
-title: "AoC d1 exercise"
+title: "AoC d1 & d2 exercises"
 output: html_document
 date: "2023-12-20"
 ---
-```{r}
+```{r d1}
+library(readr)
+library(tidyverse)
+
+#read in data
 d1_text <- read_tsv("C:/Documents and Settings/kturn/Documents/AdventOfCode2023/d1_text.txt",col_names = "puz_input")
+# extract first digit from string
 d1_text$first_num <- str_extract(d1_text$puz_input,"\\d")
+# extract last digit from string
 d1_text$last_num <- str_extract(d1_text$puz_input,"(\\d)(?!.*\\d)")
+# combine first and last digits to create 2-digit number
 d1_text$first_last <- as.integer(paste(d1_text$first_num,d1_text$last_num,sep = ""))
+# sum list of 2-digit numbers for final answer
 sum(d1_text$first_last)
-glimpse(d1_text)
 ```
+
+```{r d2}
+# extract "true" first number - could be spelled out
+library(textclean)
+d1_text2 <- d1_text
+d1_text2$text_digit_conv2 <- d1_text2$puz_input
+d1_text2$text_digit_conv2 <- str_replace(d1_text2$text_digit_conv2,"twone","21")
+d1_text2$text_digit_conv2 <- str_replace(d1_text2$text_digit_conv2,"eightwo","82")
+d1_text2$text_digit_conv2 <- str_replace(d1_text2$text_digit_conv2,"threeight","38")
+d1_text2$text_digit_conv2 <- str_replace(d1_text2$text_digit_conv2,"fiveight","58")
+d1_text2$text_digit_conv2 <- str_replace(d1_text2$text_digit_conv2,"oneight","18")
+
+d1_text2$text_digit_conv2 <- mgsub(d1_text2$text_digit_conv2, replace_number(seq_len(10)), seq_len(10))
+
+d1_text2$new_first <- str_extract(d1_text2$text_digit_conv2,"\\d")
+d1_text2$new_last <- str_extract(d1_text2$text_digit_conv2,"(\\d)(?!.*\\d)")
+d1_text2$new_first_last <- as.integer(paste(d1_text2$new_first,d1_text2$new_last,sep = ""))
+sum(d1_text2$new_first_last)
+View(d1_text2)
+```
+
 
