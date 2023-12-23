@@ -1,0 +1,55 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-12-22"
+---
+```{r}
+library(readr)
+library(tidyverse)
+
+#read in data
+d2_text <- read_tsv("C:/Documents and Settings/kturn/Documents/AdventOfCode2023/d2_text.txt",col_names = "puz_input")
+glimpse(d2_text)
+```
+Determine which games would have been possible if the bag had been loaded with only 12 red cubes, 13 green cubes, and 14 blue cubes. What is the sum of the IDs of those games?
+
+```{r}
+total_seek <- data.frame(red=12, green=13, blue=14)  
+glimpse(total_seek)
+```
+
+```{r part 1}
+d2_data <- as.data.frame(matrix(ncol = 4,nrow = 0))
+names(data) <- c("game","set","count","color")
+
+games <- d2_text %>% 
+  separate(puz_input,into = c("game","count, color"),sep = ":")
+games$game <- as.numeric(gsub("[[:alpha:]]","",games$game))
+games <- games %>% 
+  separate_rows(`count, color`,sep = ";") %>% 
+  group_by(game) %>% 
+  mutate(set = row_number()) %>% 
+  separate_rows(`count, color`,sep = ",") %>% 
+  separate(`count, color`,into = c("count","color"),sep = "(?<=\\d) (?=\\D)|(?=\\d) (?<=\\D)")
+games$count <- as.numeric(games$count)
+games <- as.data.frame(games) %>% 
+  select(game, set, count, color)
+games$color = factor(games$color, levels=names(total_seek))
+
+gameCounts <- aggregate(count~game+color, data=games, max)
+# gamesRuledOut <- 
+#   unique(Reduce(c,sapply(names(total_seek), function(ts_name) {
+#           gameCounts$game[which(gameCounts$color == ca_name & gameCounts$count > total_seek[[ts_name]])]})))
+
+available_red <- total_seek$red
+games_with_available_red <- gameCounts$game[gameCounts$color == "red" & gameCounts$count <= available_red]
+available_blue <- total_seek$blue
+games_with_available_blue <- gameCounts$game[gameCounts$color == "blue" & gameCounts$count <= available_blue]
+available_green <- total_seek$green
+games_with_available_green <- gameCounts$game[gameCounts$color == "green" & gameCounts$count <= available_green]
+
+gamesPossible <- Reduce(intersect,list(games_with_available_blue,games_with_available_green,games_with_available_red))
+sum(gamesPossible)
+# 100 is too low
+```
+
