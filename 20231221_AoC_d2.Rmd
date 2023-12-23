@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "AoC d2 exercise"
 output: html_document
 date: "2023-12-22"
 ---
@@ -51,5 +51,18 @@ games_with_available_green <- gameCounts$game[gameCounts$color == "green" & game
 gamesPossible <- Reduce(intersect,list(games_with_available_blue,games_with_available_green,games_with_available_red))
 sum(gamesPossible)
 # 100 is too low
+```
+
+```{r part 2}
+gameCounts2 <- aggregate(count~game+color+set, data=games, min)
+gameCounts2
+
+taco <- gameCounts2 %>% 
+  #filter(color == "red") %>% 
+  group_by(game,color) %>% 
+  summarise(max_count = max(count)) %>% 
+  group_by(game) %>% 
+  summarise(total_cubes = prod(max_count))
+sum(taco$total_cubes)
 ```
 

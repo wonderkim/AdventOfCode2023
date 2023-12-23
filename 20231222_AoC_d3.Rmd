@@ -1,0 +1,10 @@
+---
+title: "AoC d3 exercise"
+output: html_document
+date: "2023-12-22"
+---
+
+```{r}
+
+```
+
